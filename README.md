@@ -42,54 +42,86 @@ BQ76940 → HAL → BSP → Driver → Services → MBD Logic → CAN → TSMast
 ```mermaid
 flowchart BT
     subgraph Hardware["Hardware"]
+        CELLS[Battery Cells]
         MCU[STM32F103]
         AFE[BQ76940 AFE]
+        BUS[CAN Bus]
+        TS[TSMaster]
     end
 
-    subgraph Platform["Low Level"]
-        CMSIS[CMSIS / Startup]
+    subgraph Platform["Low-Level Platform"]
+        direction LR
+        CORE[CMSIS / Startup / Linker]
         HAL[STM32CubeF1 HAL]
+        CLOCK[Clock / Timer]
+        WD[Watchdog]
+        GPIO[GPIO / Pin Init]
+        HALI2C[HAL I2C]
+        HALCAN[HAL CAN]
     end
 
-    subgraph Drivers["Drivers"]
-        I2C[BSP I2C]
-        TIME[BSP Time]
+    subgraph Drivers["Board Support and Drivers"]
+        direction LR
+        BSPGPIO[BSP GPIO]
+        BSPTIME[BSP Time]
+        BSPI2C[BSP I2C]
+        BSPCAN[BSP CAN]
         BQ[BQ76940 Driver]
     end
 
     subgraph Services["Firmware Services"]
-        SC[Scheduler]
+        direction LR
+        SC[Cooperative Scheduler]
         MS[Measurement Service]
         DB[BMS Database]
+        DS[Diagnostic Service]
+        CP[CAN Protocol Encoder]
+    end
+
+    subgraph Application["Application"]
+        direction LR
+        MAIN[main.c]
         MA[Model Adapter]
     end
 
-    subgraph MBD["MBD BMS Logic — MATLAB / Simulink"]
+    subgraph MBD["MBD BMS Logic"]
+        direction LR
         MV["Measurement Supervision<br/>validity and stale-data handling"]
         PL["CHG/DSG Protection<br/>warnings, faults, and permissions"]
         SM["BMS State Machine<br/>startup, normal, warning, fault, sensor error"]
     end
 
-    subgraph Communication["Communication and Diagnostics"]
-        DS[Diagnostic Service]
-        CP[CAN Protocol]
-        BC[BSP CAN]
-        TS[CAN Bus / TSMaster]
+    subgraph Development["Development Environment"]
+        direction LR
+        MATLAB[MATLAB / Simulink]
+        BUILD[CMake / Ninja / Arm GNU]
     end
 
-    MCU --> CMSIS --> HAL
-    AFE --> HAL
-    HAL --> I2C --> BQ
-    HAL --> TIME --> SC
+    CELLS --> AFE
+    MCU --> CORE --> HAL
+    HAL --> CLOCK
+    HAL --> WD
+    HAL --> GPIO --> BSPGPIO
+    HAL --> HALI2C --> BSPI2C --> BQ
+    HAL --> HALCAN --> BSPCAN
+    AFE --> BQ
+
+    CLOCK --> BSPTIME --> SC
     BQ --> MS --> DB --> MA
+    BSPGPIO --> MAIN
+    WD --> MAIN
     SC --> MS
     SC --> MA
+    MAIN --> SC
+    MAIN --> BQ
 
     MA --> MV --> PL --> SM
     SM --> DS
     PL --> DS
     DB --> DS
-    DS --> CP --> BC
-    BC --> HAL
-    BC --> TS
+    DS --> CP --> BSPCAN
+    BSPCAN --> BUS --> TS
+
+    MATLAB -. creates .-> MBD
+    BUILD -. builds .-> MAIN
 ```
