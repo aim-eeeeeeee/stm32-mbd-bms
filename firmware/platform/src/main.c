@@ -18,11 +18,15 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "can.h"
+#include "i2c.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "bsp_can.h"
+#include "bsp_time.h"
+#include "bsp_gpio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -86,7 +90,13 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_I2C1_Init();
+  MX_CAN_Init();
   /* USER CODE BEGIN 2 */
+  if (bsp_can_init() != BSP_STATUS_SUCCESS)
+  {
+    Error_Handler();
+  }
 
   /* USER CODE END 2 */
 
@@ -97,8 +107,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    HAL_GPIO_TogglePin(STATUS_LED_GPIO_Port, STATUS_LED_Pin);
-    HAL_Delay(500U);
+    bsp_gpio_status_led_toggle();
+    bsp_time_delay_ms(500U);
   }
   /* USER CODE END 3 */
 }

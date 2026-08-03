@@ -15,6 +15,8 @@ set(LINKER_SCRIPT
 set(PLATFORM_SOURCES
     firmware/platform/src/main.c
     firmware/platform/src/gpio.c
+    firmware/platform/src/can.c
+    firmware/platform/src/i2c.c
     firmware/platform/src/stm32f1xx_it.c
     firmware/platform/src/stm32f1xx_hal_msp.c
     firmware/platform/src/syscalls.c
@@ -24,6 +26,7 @@ set(PLATFORM_SOURCES
 )
 
 set(HAL_SOURCES
+    vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_can.c
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c
@@ -32,13 +35,22 @@ set(HAL_SOURCES
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c
+    vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.c
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c
 )
 
+set(BSP_SOURCES
+    firmware/bsp/src/bsp_time.c
+    firmware/bsp/src/bsp_gpio.c
+    firmware/bsp/src/bsp_i2c.c
+    firmware/bsp/src/bsp_can.c
+)
+
 add_executable(${FIRMWARE_TARGET}
     ${PLATFORM_SOURCES}
+    ${BSP_SOURCES}
     ${HAL_SOURCES}
 )
 
@@ -46,6 +58,7 @@ set_target_properties(${FIRMWARE_TARGET} PROPERTIES SUFFIX ".elf")
 
 target_include_directories(${FIRMWARE_TARGET} PRIVATE
     firmware/platform/include
+    firmware/bsp/include
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy
     vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include
@@ -108,4 +121,3 @@ add_custom_command(TARGET ${FIRMWARE_TARGET} POST_BUILD
     COMMENT "Generating HEX/BIN files and reporting firmware size"
     VERBATIM
 )
-

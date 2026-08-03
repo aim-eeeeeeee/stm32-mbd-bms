@@ -41,8 +41,8 @@ time base, and toggles the active-low status LED on PB14 every 500 ms.
 | Debug interface | J-Link SWD: PA13/SWDIO and PA14/SWCLK |
 | Board status LED | PB14, active-low |
 | Battery monitor | BQ76940 |
-| Planned AFE bus | I2C1: PB6/SCL and PB7/SDA; PB8/ALERT |
-| Planned CAN pins | CAN1: PA11/RX and PA12/TX |
+| AFE bus | I2C1 at 100 kHz: PB6/SCL and PB7/SDA; PB8/ALERT polling input |
+| CAN | CAN1: PA11/RX and PA12/TX, 250 kbit/s; PA15 active-low transceiver power |
 
 The canonical STM32 configuration is stored in
 [`stm32-mbd-bms.ioc`](stm32-mbd-bms.ioc).
@@ -96,8 +96,8 @@ period.
 ### Third-party software and licenses
 
 The repository vendors the CMSIS and STM32CubeF1 HAL sources needed for an
-offline, reproducible build. Their upstream licenses remain applicable; the
-repository's top-level `LICENSE` does not replace them.
+offline, reproducible build. Their upstream licenses remain applicable. The
+repository currently provides no top-level project license.
 
 - STM32CubeF1 package license and SBOM are retained under
   [`vendor/STM32CubeF1`](vendor/STM32CubeF1).
