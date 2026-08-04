@@ -8,12 +8,13 @@ result over CAN.
 The required end-to-end path is:
 
 ```text
-Cell input
-  → BQ76940 driver
-  → validated measurement
-  → MBD protection and state logic
-  → CAN diagnostics
-  → TSMaster
+Battery simulator
+→ BQ7694003
+→ validated measurement snapshot
+→ one BmsSupervisor model <MBD>
+→ thin RTE adapter
+→ simple CAN telemetry
+→ TSMaster
 ```
 
 The initial system operates in **shadow mode**: it measures, evaluates, and
