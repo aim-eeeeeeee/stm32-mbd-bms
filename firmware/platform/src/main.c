@@ -119,6 +119,8 @@ int main(void)
     bq76940_calibration_t calibration;
     uint8_t system_status;
 
+    bsp_gpio_system_power_enable();
+    bsp_gpio_bq_wake_pulse();
     bq_init_result = bq76940_init();
     bq_calibration_result = bq76940_get_calibration(&calibration);
     if (bq_calibration_result == BQ76940_STATUS_OK)

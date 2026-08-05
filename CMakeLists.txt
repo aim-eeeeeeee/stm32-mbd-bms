@@ -52,10 +52,15 @@ set(DRIVER_SOURCES
     firmware/drivers/src/bq76940.c
 )
 
+set(SERVICE_SOURCES
+    firmware/services/src/measurement_snapshot.c
+)
+
 add_executable(${FIRMWARE_TARGET}
     ${PLATFORM_SOURCES}
     ${BSP_SOURCES}
     ${DRIVER_SOURCES}
+    ${SERVICE_SOURCES}
     ${HAL_SOURCES}
 )
 
@@ -65,6 +70,7 @@ target_include_directories(${FIRMWARE_TARGET} PRIVATE
     firmware/platform/include
     firmware/bsp/include
     firmware/drivers/include
+    firmware/services/include
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc
     vendor/STM32CubeF1/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy
     vendor/STM32CubeF1/Drivers/CMSIS/Device/ST/STM32F1xx/Include

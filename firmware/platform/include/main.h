@@ -74,6 +74,14 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
+/* Board-specific BQ76940 TS1 boot circuit control, confirmed with the hardware
+ * PB3 is available because JTAG is disabled
+ * while SWD remains enabled in HAL_MspInit(). */
+#define BQ_WAKE_Pin GPIO_PIN_3
+#define BQ_WAKE_GPIO_Port GPIOB
+#define SYS_POWER_ENABLE_Pin GPIO_PIN_5
+#define SYS_POWER_ENABLE_GPIO_Port GPIOB
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

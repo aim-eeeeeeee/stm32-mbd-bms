@@ -1,0 +1,6 @@
+%RUN_MODEL_TESTS Run all deterministic BmsSupervisor model tests.
+% The executable model and its scenarios are created in the next stage.
+
+error('BmsSupervisor:TestsNotReady', ...
+    ['BmsSupervisor model tests do not exist yet. Build the model and ', ...
+     'required scenarios before enabling this automation entry point.']);
