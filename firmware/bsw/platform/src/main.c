@@ -28,6 +28,7 @@
 #include "bsp_time.h"
 #include "bsp_gpio.h"
 #include "bq76940.h"
+#include "rte_scheduler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -37,8 +38,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
-#define BQ_ACQUISITION_PERIOD_MS (500U)
 
 /* USER CODE END PD */
 
@@ -57,14 +56,6 @@ volatile bq76940_status_t bq_status_result = BQ76940_STATUS_NOT_INIT;
 volatile int16_t bq_adc_gain_uv_per_lsb;
 volatile int8_t bq_adc_offset_mv;
 volatile uint8_t bq_system_status;
-volatile bq76940_status_t bq_cell_read_result = BQ76940_STATUS_NOT_INIT;
-volatile uint32_t bq_acquisition_attempts;
-volatile uint32_t bq_acquisition_successes;
-volatile uint32_t bq_acquisition_crc_errors;
-volatile uint32_t bq_acquisition_timeout_errors;
-volatile uint32_t bq_acquisition_other_errors;
-volatile uint16_t bq_last_cell_mv[BQ76940_CELL_COUNT];
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -115,6 +106,8 @@ int main(void)
     Error_Handler();
   }
 
+  rte_scheduler_init(bsp_time_now_ms());
+
   {
     bq76940_calibration_t calibration;
     uint8_t system_status;
@@ -145,39 +138,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    if (rte_scheduler_run(bsp_time_now_ms()))
     {
-      uint16_t cell_mv[BQ76940_CELL_COUNT];
-
-      ++bq_acquisition_attempts;
-      bq_cell_read_result = bq76940_read_cell_voltages(cell_mv);
-
-      if (bq_cell_read_result == BQ76940_STATUS_OK)
-      {
-        ++bq_acquisition_successes;
-
-        for (uint8_t cell_index = 0U;
-             cell_index < BQ76940_CELL_COUNT;
-             ++cell_index)
-        {
-          bq_last_cell_mv[cell_index] = cell_mv[cell_index];
-        }
-      }
-      else if (bq_cell_read_result == BQ76940_STATUS_CRC_ERR)
-      {
-        ++bq_acquisition_crc_errors;
-      }
-      else if (bq_cell_read_result == BQ76940_STATUS_TIMEOUT)
-      {
-        ++bq_acquisition_timeout_errors;
-      }
-      else
-      {
-        ++bq_acquisition_other_errors;
-      }
+      bsp_gpio_status_led_toggle();
     }
-
-    bsp_gpio_status_led_toggle();
-    bsp_time_delay_ms(BQ_ACQUISITION_PERIOD_MS);
   }
   /* USER CODE END 3 */
 }

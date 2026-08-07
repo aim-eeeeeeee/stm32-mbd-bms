@@ -66,10 +66,51 @@ minimum version requirements unless stated otherwise.
 
 ### Build
 
-From the repository root:
+Run all commands from the repository root.
+
+#### 1. Generate the model code
+
+In MATLAB:
+
+```matlab
+addpath('firmware/asw/bms_supervisor/model/scripts');
+generate_code();
+```
+
+The complete Embedded Coder workspace is created under:
+
+```text
+codegen/BmsSupervisor_ert_rtw/
+```
+
+#### 2. Copy deployable code into ASW
+
+In PowerShell:
+
+```powershell
+Copy-Item `
+  .\codegen\BmsSupervisor_ert_rtw\*.c `
+  .\firmware\asw\bms_supervisor\src\generated\ `
+  -Force
+
+Copy-Item `
+  .\codegen\BmsSupervisor_ert_rtw\*.h `
+  .\firmware\asw\bms_supervisor\src\generated\ `
+  -Force
+```
+
+Do not copy MATLAB build metadata such as `.mk`, `.rsp`, `.bat`, `.mat`,
+`.dmr`, `.tmw`, or `.obj` files into the ASW source directory.
+
+#### 3. Configure the STM32 build
 
 ```powershell
 cmake --preset Debug --fresh
+```
+
+#### 4. Build the firmware
+
+```powershell
 cmake --build --preset Debug
 ```
 

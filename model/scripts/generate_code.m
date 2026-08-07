@@ -1,6 +1,0 @@
-%GENERATE_CODE Generate reviewed C code from the tested BmsSupervisor model.
-% Code generation must remain blocked until the model and tests exist.
-
-error('BmsSupervisor:CodeGenerationNotReady', ...
-    ['BmsSupervisor code generation is disabled until the model exists ', ...
-     'and run_model_tests.m completes successfully.']);

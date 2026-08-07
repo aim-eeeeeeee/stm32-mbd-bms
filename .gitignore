@@ -1,3 +1,8 @@
 log/
 build/
+slprj/
+*.slxc
+*_ert_rtw/
+codegen/*
+!codegen/README.md
 *.su
