@@ -27,6 +27,7 @@
 #include "bsp_can.h"
 #include "bsp_time.h"
 #include "bsp_gpio.h"
+#include "bsp_watchdog.h"
 #include "bq76940.h"
 #include "rte_scheduler.h"
 /* USER CODE END Includes */
@@ -129,6 +130,11 @@ int main(void)
     }
   }
 
+  if (bsp_watchdog_init() != BSP_STATUS_SUCCESS)
+  {
+    Error_Handler();
+  }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -140,6 +146,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
     if (rte_scheduler_run(bsp_time_now_ms()))
     {
+      bsp_watchdog_refresh();
       bsp_gpio_status_led_toggle();
     }
   }

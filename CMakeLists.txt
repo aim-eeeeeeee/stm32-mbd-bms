@@ -46,6 +46,7 @@ set(BSP_SOURCES
     firmware/bsw/bsp/src/bsp_gpio.c
     firmware/bsw/bsp/src/bsp_i2c.c
     firmware/bsw/bsp/src/bsp_can.c
+    firmware/bsw/bsp/src/bsp_watchdog.c
 )
 
 set(DRIVER_SOURCES

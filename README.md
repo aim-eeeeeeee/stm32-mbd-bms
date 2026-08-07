@@ -44,6 +44,7 @@ time base, and toggles the active-low status LED on PB14 every 500 ms.
 | Battery monitor | BQ76940 |
 | AFE bus | I2C1 at 100 kHz: PB6/SCL and PB7/SDA; PB8/ALERT polling input |
 | CAN | CAN1: PA11/RX and PA12/TX, 250 kbit/s; PA15 active-low transceiver power |
+| Watchdog | Independent watchdog, approximately 2 s timeout; refreshed after each 500 ms RTE cycle |
 
 The canonical STM32 configuration is stored in
 [`stm32-mbd-bms.ioc`](stm32-mbd-bms.ioc).
